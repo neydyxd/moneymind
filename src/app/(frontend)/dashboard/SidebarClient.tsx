@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 
 interface SidebarClientProps {
@@ -33,23 +34,23 @@ export function SidebarClient({ userEmail, userName, userInitials }: SidebarClie
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        <a href="/" className="sidebar-logo">
+        <Link href="/" className="sidebar-logo">
           <div className="sidebar-logo-icon">💰</div>
           MoneyMind
-        </a>
+        </Link>
       </div>
 
       <nav className="sidebar-nav">
         <div className="sidebar-section-label">Навигация</div>
         {navItems.map((item) => (
-          <a
+          <Link
             key={item.href}
             href={item.href}
             className={`sidebar-link ${isActive(item.href, item.exact) ? 'active' : ''}`}
           >
             <span style={{ fontSize: 16 }}>{item.icon}</span>
             {item.label}
-          </a>
+          </Link>
         ))}
       </nav>
 

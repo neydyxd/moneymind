@@ -78,7 +78,7 @@ export default async function LandingPage() {
             <div className="feature-icon">🤖</div>
             <div className="feature-title">AI-парсинг расходов</div>
             <div className="feature-desc">
-              Просто напишите "кофе 300" или "такси до офиса 500р" — AI сам определит сумму, категорию и тип операции
+              Просто напишите &ldquo;кофе 300&rdquo; или &ldquo;такси до офиса 500р&rdquo; — AI сам определит сумму, категорию и тип операции
             </div>
           </div>
           <div className="feature-card">
@@ -99,7 +99,7 @@ export default async function LandingPage() {
             <div className="feature-icon">💬</div>
             <div className="feature-title">AI-ассистент</div>
             <div className="feature-desc">
-              Задайте вопрос: "Сколько я потратил на кофе?" или "Как сэкономить в этом месяце?" — и получите умный ответ
+              Задайте вопрос: &ldquo;Сколько я потратил на кофе?&rdquo; или &ldquo;Как сэкономить в этом месяце?&rdquo; — и получите умный ответ
             </div>
           </div>
           <div className="feature-card">

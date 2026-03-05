@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import '../styles.css'
 
@@ -42,10 +43,10 @@ export default function LoginPage() {
   return (
     <div className="auth-page">
       <div className="auth-card">
-        <a href="/" className="auth-logo">
+        <Link href="/" className="auth-logo">
           <div className="auth-logo-icon">💰</div>
           MoneyMind
-        </a>
+        </Link>
 
         <h1 className="auth-title">Добро пожаловать</h1>
         <p className="auth-subtitle">Войдите в свой аккаунт</p>
