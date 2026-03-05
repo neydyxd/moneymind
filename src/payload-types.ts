@@ -69,6 +69,10 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    categories: Category;
+    transactions: Transaction;
+    'chat-history': ChatHistory;
+    'funnel-events': FunnelEvent;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -78,6 +82,10 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
+    transactions: TransactionsSelect<false> | TransactionsSelect<true>;
+    'chat-history': ChatHistorySelect<false> | ChatHistorySelect<true>;
+    'funnel-events': FunnelEventsSelect<false> | FunnelEventsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -90,6 +98,9 @@ export interface Config {
   globals: {};
   globalsSelect: {};
   locale: null;
+  widgets: {
+    collections: CollectionsWidget;
+  };
   user: User;
   jobs: {
     tasks: unknown;
@@ -120,6 +131,13 @@ export interface UserAuthOperations {
  */
 export interface User {
   id: string;
+  name?: string | null;
+  /**
+   * ID пользователя в Telegram для интеграции с ботом
+   */
+  telegramId?: string | null;
+  currency?: ('RUB' | 'USD' | 'EUR') | null;
+  monthlyBudget?: number | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -160,6 +178,119 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: string;
+  name: string;
+  icon?:
+    | (
+        | 'utensils'
+        | 'car'
+        | 'shopping-bag'
+        | 'home'
+        | 'heart'
+        | 'gamepad'
+        | 'book'
+        | 'coffee'
+        | 'plane'
+        | 'trending-up'
+        | 'tag'
+      )
+    | null;
+  color?:
+    | (
+        | '#6366f1'
+        | '#3b82f6'
+        | '#22c55e'
+        | '#eab308'
+        | '#f97316'
+        | '#ef4444'
+        | '#ec4899'
+        | '#06b6d4'
+        | '#8b5cf6'
+        | '#a78bfa'
+        | '#10b981'
+      )
+    | null;
+  /**
+   * Категория доступна всем пользователям
+   */
+  isDefault?: boolean | null;
+  /**
+   * Оставьте пустым для системной категории
+   */
+  user?: (string | null) | User;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transactions".
+ */
+export interface Transaction {
+  id: string;
+  description: string;
+  amount: number;
+  type: 'expense' | 'income';
+  category?: (string | null) | Category;
+  date: string;
+  user: string | User;
+  source?: ('manual' | 'voice' | 'ai' | 'telegram') | null;
+  /**
+   * Оригинальный текст для AI-парсинга
+   */
+  rawText?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-history".
+ */
+export interface ChatHistory {
+  id: string;
+  user: string | User;
+  messages?:
+    | {
+        role: 'user' | 'assistant';
+        content: string;
+        timestamp?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Автоматически генерируется из первого сообщения
+   */
+  title?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "funnel-events".
+ */
+export interface FunnelEvent {
+  id: string;
+  user: string | User;
+  event: 'registration' | 'first_transaction' | 'chat_used' | 'voice_used' | 'telegram_connected' | 'stats_viewed';
+  /**
+   * Дополнительные данные о событии
+   */
+  meta?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -189,6 +320,22 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: string | Media;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: string | Category;
+      } | null)
+    | ({
+        relationTo: 'transactions';
+        value: string | Transaction;
+      } | null)
+    | ({
+        relationTo: 'chat-history';
+        value: string | ChatHistory;
+      } | null)
+    | ({
+        relationTo: 'funnel-events';
+        value: string | FunnelEvent;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -237,6 +384,10 @@ export interface PayloadMigration {
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  telegramId?: T;
+  currency?: T;
+  monthlyBudget?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -271,6 +422,64 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  icon?: T;
+  color?: T;
+  isDefault?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transactions_select".
+ */
+export interface TransactionsSelect<T extends boolean = true> {
+  description?: T;
+  amount?: T;
+  type?: T;
+  category?: T;
+  date?: T;
+  user?: T;
+  source?: T;
+  rawText?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "chat-history_select".
+ */
+export interface ChatHistorySelect<T extends boolean = true> {
+  user?: T;
+  messages?:
+    | T
+    | {
+        role?: T;
+        content?: T;
+        timestamp?: T;
+        id?: T;
+      };
+  title?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "funnel-events_select".
+ */
+export interface FunnelEventsSelect<T extends boolean = true> {
+  user?: T;
+  event?: T;
+  meta?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -311,6 +520,16 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "collections_widget".
+ */
+export interface CollectionsWidget {
+  data?: {
+    [k: string]: unknown;
+  };
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

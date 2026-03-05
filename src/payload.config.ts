@@ -7,6 +7,10 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Categories } from './collections/Categories'
+import { Transactions } from './collections/Transactions'
+import { ChatHistory } from './collections/ChatHistory'
+import { FunnelEvents } from './collections/FunnelEvents'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -17,8 +21,11 @@ export default buildConfig({
     importMap: {
       baseDir: path.resolve(dirname),
     },
+    meta: {
+      titleSuffix: '— MoneyMind',
+    },
   },
-  collections: [Users, Media],
+  collections: [Users, Media, Categories, Transactions, ChatHistory, FunnelEvents],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
