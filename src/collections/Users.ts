@@ -53,5 +53,15 @@ export const Users: CollectionConfig = {
       label: 'Ежемесячный бюджет',
       min: 0,
     },
+    {
+      name: 'telegramConnectToken',
+      type: 'text',
+      admin: { hidden: true, description: 'Временный токен для подключения Telegram (в БД для serverless)' },
+    },
+    {
+      name: 'telegramConnectTokenExpiresAt',
+      type: 'date',
+      admin: { hidden: true },
+    },
   ],
 }

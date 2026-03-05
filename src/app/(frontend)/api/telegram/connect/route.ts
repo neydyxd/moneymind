@@ -15,7 +15,7 @@ export async function POST() {
       return Response.json({ error: 'Не авторизован' }, { status: 401 })
     }
 
-    const token = generateConnectToken(user.id)
+    const token = await generateConnectToken(user.id)
     const botUsername = process.env.TELEGRAM_BOT_USERNAME
 
     return Response.json({

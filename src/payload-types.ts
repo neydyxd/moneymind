@@ -138,6 +138,11 @@ export interface User {
   telegramId?: string | null;
   currency?: ('RUB' | 'USD' | 'EUR') | null;
   monthlyBudget?: number | null;
+  /**
+   * Временный токен для подключения Telegram (в БД для serverless)
+   */
+  telegramConnectToken?: string | null;
+  telegramConnectTokenExpiresAt?: string | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -388,6 +393,8 @@ export interface UsersSelect<T extends boolean = true> {
   telegramId?: T;
   currency?: T;
   monthlyBudget?: T;
+  telegramConnectToken?: T;
+  telegramConnectTokenExpiresAt?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;

@@ -5,7 +5,7 @@ import { chat } from '@/lib/ai'
 import crypto from 'crypto'
 
 // In-memory stores (работает для single-process Next.js)
-export const pendingConnectTokens = new Map<string, { userId: string; expiresAt: number }>()
+// Токены подключения Telegram — в БД (Users.telegramConnectToken) для serverless
 const pendingTransactions = new Map<number, PendingTransaction>()
 const chatSessions = new Map<number, string>() // chatId -> sessionId
 
@@ -19,22 +19,19 @@ interface PendingTransaction {
   currency: string
 }
 
-// Очистка истёкших токенов каждую минуту
-setInterval(
-  () => {
-    const now = Date.now()
-    for (const [key, val] of pendingConnectTokens.entries()) {
-      if (now > val.expiresAt) pendingConnectTokens.delete(key)
-    }
-  },
-  60_000,
-)
-
-export function generateConnectToken(userId: string): string {
+/** Сохраняет токен в БД для serverless (токен доступен из любого инстанса) */
+export async function generateConnectToken(userId: string): Promise<string> {
   const token = crypto.randomBytes(16).toString('hex')
-  pendingConnectTokens.set(token, {
-    userId,
-    expiresAt: Date.now() + 10 * 60 * 1000, // 10 минут
+  const payload = await getPayloadInstance()
+  const expiresAt = new Date(Date.now() + 10 * 60 * 1000) // 10 минут
+  await payload.update({
+    collection: 'users',
+    id: userId,
+    data: {
+      telegramConnectToken: token,
+      telegramConnectTokenExpiresAt: expiresAt.toISOString(),
+    } as Record<string, unknown>,
+    overrideAccess: true,
   })
   return token
 }
@@ -140,27 +137,40 @@ async function handleStart(ctx: Context) {
   const token = rawText.split(' ')[1]
 
   if (token) {
-    const tokenData = pendingConnectTokens.get(token)
-    if (!tokenData || Date.now() > tokenData.expiresAt) {
+    const payload = await getPayloadInstance()
+    const users = await payload.find({
+      collection: 'users',
+      where: {
+        and: [
+          { telegramConnectToken: { equals: token } },
+          { telegramConnectTokenExpiresAt: { greater_than: new Date().toISOString() } },
+        ],
+      },
+      limit: 1,
+      overrideAccess: true,
+    })
+    const user = users.docs[0]
+    if (!user) {
       await ctx.reply('❌ Ссылка устарела. Сгенерируйте новую в настройках приложения.')
       return
     }
 
-    const payload = await getPayloadInstance()
     await payload.update({
       collection: 'users',
-      id: tokenData.userId,
-      data: { telegramId },
+      id: user.id,
+      data: {
+        telegramId,
+        telegramConnectToken: '',
+        telegramConnectTokenExpiresAt: null,
+      } as Record<string, unknown>,
       overrideAccess: true,
     })
 
     await payload.create({
       collection: 'funnel-events',
-      data: { user: tokenData.userId, event: 'telegram_connected' },
+      data: { user: user.id, event: 'telegram_connected' },
       overrideAccess: true,
     })
-
-    pendingConnectTokens.delete(token)
 
     await ctx.reply(
       `✅ Аккаунт успешно привязан!\n\n` +
