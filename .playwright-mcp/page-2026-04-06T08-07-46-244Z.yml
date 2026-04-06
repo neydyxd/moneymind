@@ -1,0 +1,39 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - button "Открыть меню" [ref=e3] [cursor=pointer]
+    - navigation "Основная навигация" [ref=e7]:
+      - link "💰 MoneyMind" [ref=e9] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e10]: 💰
+        - text: MoneyMind
+      - navigation [ref=e11]:
+        - generic [ref=e12]: Навигация
+        - link "📊 Обзор" [ref=e13] [cursor=pointer]:
+          - /url: /dashboard
+          - generic [ref=e14]: 📊
+          - text: Обзор
+        - link "💳 Транзакции" [ref=e15] [cursor=pointer]:
+          - /url: /dashboard/transactions
+          - generic [ref=e16]: 💳
+          - text: Транзакции
+        - link "🤖 AI-чат" [ref=e17] [cursor=pointer]:
+          - /url: /dashboard/chat
+          - generic [ref=e18]: 🤖
+          - text: AI-чат
+        - link "⚙️ Настройки" [ref=e19] [cursor=pointer]:
+          - /url: /dashboard/settings
+          - generic [ref=e20]: ⚙️
+          - text: Настройки
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]: С
+          - generic [ref=e24]:
+            - generic [ref=e25]: Степан
+            - generic [ref=e26]: test@mail.ru
+        - button "🚪 Выйти" [ref=e27] [cursor=pointer]:
+          - generic [ref=e28]: 🚪
+          - text: Выйти
+    - generic [ref=e31]: Настройки
+  - button "Open Next.js Dev Tools" [ref=e39] [cursor=pointer]:
+    - img [ref=e40]
+  - alert [ref=e43]

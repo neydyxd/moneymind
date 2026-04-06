@@ -1,0 +1,77 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - button "Открыть меню" [ref=e3] [cursor=pointer]
+    - navigation "Основная навигация" [ref=e7]:
+      - link "💰 MoneyMind" [ref=e9] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e10]: 💰
+        - text: MoneyMind
+      - navigation [ref=e11]:
+        - generic [ref=e12]: Навигация
+        - link "📊 Обзор" [ref=e13] [cursor=pointer]:
+          - /url: /dashboard
+          - generic [ref=e14]: 📊
+          - text: Обзор
+        - link "💳 Транзакции" [ref=e15] [cursor=pointer]:
+          - /url: /dashboard/transactions
+          - generic [ref=e16]: 💳
+          - text: Транзакции
+        - link "🤖 AI-чат" [ref=e17] [cursor=pointer]:
+          - /url: /dashboard/chat
+          - generic [ref=e18]: 🤖
+          - text: AI-чат
+        - link "⚙️ Настройки" [ref=e19] [cursor=pointer]:
+          - /url: /dashboard/settings
+          - generic [ref=e20]: ⚙️
+          - text: Настройки
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]: С
+          - generic [ref=e24]:
+            - generic [ref=e25]: Степан
+            - generic [ref=e26]: test@mail.ru
+        - button "🚪 Выйти" [ref=e27] [cursor=pointer]:
+          - generic [ref=e28]: 🚪
+          - text: Выйти
+    - generic [ref=e29]:
+      - generic [ref=e31]:
+        - generic [ref=e32]: Транзакции
+        - generic [ref=e33]: Управление доходами и расходами
+      - generic [ref=e34]:
+        - generic [ref=e35]:
+          - generic [ref=e36]: Добавить транзакцию
+          - generic [ref=e37]:
+            - button "↓ Расход" [ref=e38] [cursor=pointer]
+            - button "↑ Доход" [ref=e39] [cursor=pointer]
+          - generic [ref=e40]:
+            - generic [ref=e41]:
+              - generic [ref=e42]: Описание (или введите текст для AI-парсинга)
+              - generic [ref=e43]:
+                - 'textbox "Напр: \"кофе 300\" или \"такси до аэропорта 1500р\"" [ref=e44]'
+                - generic [ref=e45]:
+                  - button "🎙" [ref=e46] [cursor=pointer]
+                  - button "✨" [disabled] [ref=e47] [cursor=pointer]
+            - generic [ref=e48]:
+              - generic [ref=e49]:
+                - generic [ref=e50]: Сумма ₽
+                - spinbutton [ref=e51]
+              - generic [ref=e52]:
+                - generic [ref=e53]: Категория
+                - combobox [ref=e54] [cursor=pointer]:
+                  - option "— Без категории —" [selected]
+                  - option "Доход"
+                  - option "Путешествия"
+                  - option "Кофе"
+                  - option "Образование"
+                  - option "Развлечения"
+                  - option "Здоровье"
+                  - option "Жильё"
+                  - option "Покупки"
+                  - option "Транспорт"
+                  - option "Еда и рестораны"
+            - generic [ref=e55]:
+              - generic [ref=e56]: Дата
+              - textbox [ref=e57]: 2026-04-06
+            - button "Добавить расход" [disabled] [ref=e58] [cursor=pointer]
+        - generic [ref=e60]: История операций
+  - alert [ref=e63]

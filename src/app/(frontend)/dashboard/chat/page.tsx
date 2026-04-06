@@ -63,6 +63,22 @@ export default function ChatPage() {
   }, [])
 
   useEffect(() => {
+    const vv = window.visualViewport
+    if (!vv) return
+
+    const onResize = () => {
+      const chatInput = document.querySelector('.chat-input-area') as HTMLElement
+      if (chatInput) {
+        const offset = window.innerHeight - vv.height
+        chatInput.style.paddingBottom = offset > 0 ? `${offset + 12}px` : ''
+      }
+    }
+
+    vv.addEventListener('resize', onResize)
+    return () => vv.removeEventListener('resize', onResize)
+  }, [])
+
+  useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [messages, loading])
 

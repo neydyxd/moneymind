@@ -1,0 +1,103 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - button "Открыть меню" [ref=e3] [cursor=pointer]
+    - navigation "Основная навигация" [ref=e7]:
+      - link "💰 MoneyMind" [ref=e9] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e10]: 💰
+        - text: MoneyMind
+      - navigation [ref=e11]:
+        - generic [ref=e12]: Навигация
+        - link "📊 Обзор" [ref=e13] [cursor=pointer]:
+          - /url: /dashboard
+          - generic [ref=e14]: 📊
+          - text: Обзор
+        - link "💳 Транзакции" [ref=e15] [cursor=pointer]:
+          - /url: /dashboard/transactions
+          - generic [ref=e16]: 💳
+          - text: Транзакции
+        - link "🤖 AI-чат" [ref=e17] [cursor=pointer]:
+          - /url: /dashboard/chat
+          - generic [ref=e18]: 🤖
+          - text: AI-чат
+        - link "⚙️ Настройки" [ref=e19] [cursor=pointer]:
+          - /url: /dashboard/settings
+          - generic [ref=e20]: ⚙️
+          - text: Настройки
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]: С
+          - generic [ref=e24]:
+            - generic [ref=e25]: Степан
+            - generic [ref=e26]: test@mail.ru
+        - button "🚪 Выйти" [ref=e27] [cursor=pointer]:
+          - generic [ref=e28]: 🚪
+          - text: Выйти
+    - generic [ref=e29]:
+      - generic [ref=e30]:
+        - generic [ref=e31]:
+          - generic [ref=e32]: Доброе утро, Степан! 👋
+          - generic [ref=e33]: Статистика за апрель 2026 г.
+        - link "+ Добавить расход" [ref=e34] [cursor=pointer]:
+          - /url: /dashboard/transactions
+      - generic [ref=e35]:
+        - generic [ref=e36]:
+          - generic [ref=e37]:
+            - generic [ref=e38]: Расходы
+            - generic [ref=e39]: 0 ₽
+            - generic [ref=e40]: ↓ 100% к прошлому месяцу
+          - generic [ref=e41]:
+            - generic [ref=e42]: Доходы
+            - generic [ref=e43]: 0 ₽
+            - generic [ref=e44]: ↓ 100% к прошлому месяцу
+          - generic [ref=e45]:
+            - generic [ref=e46]: Баланс
+            - generic [ref=e47]: +0 ₽
+            - generic [ref=e48]: 0 транзакций
+          - generic [ref=e49]:
+            - generic [ref=e50]:
+              - generic [ref=e51]: 📋
+              - generic [ref=e52]: Бюджет
+            - generic [ref=e53]: 30 000 ₽ осталось
+            - generic [ref=e55]: 0% использовано
+        - generic [ref=e56]:
+          - generic [ref=e57]:
+            - generic [ref=e58]: Расходы по категориям
+            - generic [ref=e59]:
+              - generic [ref=e60]: 🥧
+              - generic [ref=e61]: Нет данных
+              - generic [ref=e62]: Добавьте первые расходы
+          - generic [ref=e63]:
+            - generic [ref=e64]: Расходы по дням
+            - generic [ref=e65]:
+              - generic [ref=e66]: 📈
+              - generic [ref=e67]: Нет данных
+              - generic [ref=e68]: Добавьте первые расходы
+        - generic [ref=e69]:
+          - generic [ref=e71]: Последние транзакции
+          - generic [ref=e72]:
+            - generic [ref=e73]:
+              - generic [ref=e74]: 🔴
+              - generic [ref=e75]:
+                - generic [ref=e76]: пиво 500 рублей
+                - generic [ref=e77]: 07.03.2026
+              - generic [ref=e78]: −500 ₽
+            - generic [ref=e79]:
+              - generic [ref=e80]: 🔴
+              - generic [ref=e81]:
+                - generic [ref=e82]: цветы
+                - generic [ref=e83]: 05.03.2026
+              - generic [ref=e84]: −500 ₽
+            - generic [ref=e85]:
+              - generic [ref=e86]: 💚
+              - generic [ref=e87]:
+                - generic [ref=e88]: зарплата
+                - generic [ref=e89]: 05.03.2026
+              - generic [ref=e90]: +20 000 ₽
+            - generic [ref=e91]:
+              - generic [ref=e92]: 🔴
+              - generic [ref=e93]:
+                - generic [ref=e94]: капучино 300
+                - generic [ref=e95]: 05.03.2026
+              - generic [ref=e96]: −300 ₽
+  - alert [ref=e97]

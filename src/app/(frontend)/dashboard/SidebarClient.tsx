@@ -26,6 +26,29 @@ export function SidebarClient({ userEmail, userName, userInitials }: SidebarClie
     setMobileOpen(false)
   }, [pathname])
 
+  useEffect(() => {
+    if (mobileOpen) {
+      const scrollY = window.scrollY
+      document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.width = '100%'
+      document.body.style.top = `-${scrollY}px`
+    } else {
+      const scrollY = document.body.style.top
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.width = ''
+      document.body.style.top = ''
+      window.scrollTo(0, parseInt(scrollY || '0') * -1)
+    }
+    return () => {
+      document.body.style.overflow = ''
+      document.body.style.position = ''
+      document.body.style.width = ''
+      document.body.style.top = ''
+    }
+  }, [mobileOpen])
+
   async function handleLogout() {
     await fetch('/api/users/logout', { method: 'POST', credentials: 'include' })
     router.push('/')
@@ -39,17 +62,32 @@ export function SidebarClient({ userEmail, userName, userInitials }: SidebarClie
 
   return (
     <>
-      <button className="mobile-menu-btn" onClick={() => setMobileOpen(true)} aria-label="Открыть меню">
+      <button
+        className={`mobile-menu-btn${mobileOpen ? ' open' : ''}`}
+        onClick={() => setMobileOpen(!mobileOpen)}
+        aria-label={mobileOpen ? 'Закрыть меню' : 'Открыть меню'}
+        aria-expanded={mobileOpen}
+        aria-controls="sidebar-nav"
+      >
         <span />
         <span />
         <span />
       </button>
 
-      {mobileOpen && <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} />}
+      {mobileOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setMobileOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-      <aside className={`sidebar ${mobileOpen ? 'sidebar--open' : ''}`}>
-        <button className="sidebar-close-btn" onClick={() => setMobileOpen(false)} aria-label="Закрыть меню">✕</button>
-
+      <aside
+        className={`sidebar${mobileOpen ? ' sidebar--open' : ''}`}
+        id="sidebar-nav"
+        role="navigation"
+        aria-label="Основная навигация"
+      >
         <div className="sidebar-header">
           <Link href="/" className="sidebar-logo">
             <div className="sidebar-logo-icon">💰</div>

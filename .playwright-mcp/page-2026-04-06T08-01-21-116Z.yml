@@ -1,0 +1,111 @@
+- generic [ref=e1]:
+  - generic [ref=e2]:
+    - button "Закрыть меню" [expanded] [active] [ref=e107] [cursor=pointer]
+    - navigation "Основная навигация" [ref=e7]:
+      - link "💰 MoneyMind" [ref=e9] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e10]: 💰
+        - text: MoneyMind
+      - navigation [ref=e11]:
+        - generic [ref=e12]: Навигация
+        - link "📊 Обзор" [ref=e13] [cursor=pointer]:
+          - /url: /dashboard
+          - generic [ref=e14]: 📊
+          - text: Обзор
+        - link "💳 Транзакции" [ref=e15] [cursor=pointer]:
+          - /url: /dashboard/transactions
+          - generic [ref=e16]: 💳
+          - text: Транзакции
+        - link "🤖 AI-чат" [ref=e17] [cursor=pointer]:
+          - /url: /dashboard/chat
+          - generic [ref=e18]: 🤖
+          - text: AI-чат
+        - link "⚙️ Настройки" [ref=e19] [cursor=pointer]:
+          - /url: /dashboard/settings
+          - generic [ref=e20]: ⚙️
+          - text: Настройки
+      - generic [ref=e21]:
+        - generic [ref=e22]:
+          - generic [ref=e23]: С
+          - generic [ref=e24]:
+            - generic [ref=e25]: Степан
+            - generic [ref=e26]: test@mail.ru
+        - button "🚪 Выйти" [ref=e27] [cursor=pointer]:
+          - generic [ref=e28]: 🚪
+          - text: Выйти
+    - generic [ref=e29]:
+      - generic [ref=e110]:
+        - generic [ref=e111]: Транзакции
+        - generic [ref=e112]: Управление доходами и расходами
+      - generic [ref=e113]:
+        - generic [ref=e114]:
+          - generic [ref=e115]: Добавить транзакцию
+          - generic [ref=e116]:
+            - button "↓ Расход" [ref=e117] [cursor=pointer]
+            - button "↑ Доход" [ref=e118] [cursor=pointer]
+          - generic [ref=e119]:
+            - generic [ref=e120]:
+              - generic [ref=e121]: Описание (или введите текст для AI-парсинга)
+              - generic [ref=e122]:
+                - 'textbox "Напр: \"кофе 300\" или \"такси до аэропорта 1500р\"" [ref=e123]'
+                - generic [ref=e124]:
+                  - button "🎙" [ref=e125] [cursor=pointer]
+                  - button "✨" [disabled] [ref=e126] [cursor=pointer]
+            - generic [ref=e127]:
+              - generic [ref=e128]:
+                - generic [ref=e129]: Сумма ₽
+                - spinbutton [ref=e130]
+              - generic [ref=e131]:
+                - generic [ref=e132]: Категория
+                - combobox [ref=e133] [cursor=pointer]:
+                  - option "— Без категории —" [selected]
+                  - option "Доход"
+                  - option "Путешествия"
+                  - option "Кофе"
+                  - option "Образование"
+                  - option "Развлечения"
+                  - option "Здоровье"
+                  - option "Жильё"
+                  - option "Покупки"
+                  - option "Транспорт"
+                  - option "Еда и рестораны"
+            - generic [ref=e134]:
+              - generic [ref=e135]: Дата
+              - textbox [ref=e136]: 2026-04-06
+            - button "Добавить расход" [disabled] [ref=e137] [cursor=pointer]
+        - generic [ref=e138]:
+          - generic [ref=e139]: История операций
+          - generic [ref=e140]:
+            - generic [ref=e141]:
+              - generic [ref=e142]: 🔴
+              - generic [ref=e143]:
+                - generic [ref=e144]: пиво 500 рублей
+                - generic [ref=e145]: 07.03.2026
+              - generic [ref=e146]: −500 ₽
+              - button "🗑" [ref=e147] [cursor=pointer]
+            - generic [ref=e148]:
+              - generic [ref=e149]: 🔴
+              - generic [ref=e150]:
+                - generic [ref=e151]: цветы
+                - generic [ref=e152]:
+                  - text: 05.03.2026
+                  - generic [ref=e153]: via telegram
+              - generic [ref=e154]: −500 ₽
+              - button "🗑" [ref=e155] [cursor=pointer]
+            - generic [ref=e156]:
+              - generic [ref=e157]: 💚
+              - generic [ref=e158]:
+                - generic [ref=e159]: зарплата
+                - generic [ref=e160]: 05.03.2026
+              - generic [ref=e161]: +20 000 ₽
+              - button "🗑" [ref=e162] [cursor=pointer]
+            - generic [ref=e163]:
+              - generic [ref=e164]: 🔴
+              - generic [ref=e165]:
+                - generic [ref=e166]: капучино 300
+                - generic [ref=e167]: 05.03.2026
+              - generic [ref=e168]: −300 ₽
+              - button "🗑" [ref=e169] [cursor=pointer]
+  - button "Open Next.js Dev Tools" [ref=e103] [cursor=pointer]:
+    - img [ref=e104]
+  - alert [ref=e97]

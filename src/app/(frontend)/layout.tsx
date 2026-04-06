@@ -6,6 +6,12 @@ export const metadata = {
   title: 'MoneyMind',
 }
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover' as const,
+}
+
 export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
