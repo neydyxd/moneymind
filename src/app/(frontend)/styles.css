@@ -1184,6 +1184,8 @@ input, textarea, select { font-family: inherit; }
 
 .form-input {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 11px 14px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
@@ -1192,6 +1194,8 @@ input, textarea, select { font-family: inherit; }
   font-size: 14px;
   transition: all 0.2s;
   outline: none;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
 .form-input:focus {
@@ -1540,6 +1544,7 @@ input, textarea, select { font-family: inherit; }
   border-radius: var(--radius-lg);
   padding: 20px;
   margin-bottom: 20px;
+  overflow: hidden;
 }
 
 .form-row {
@@ -1619,6 +1624,8 @@ input, textarea, select { font-family: inherit; }
 
 .form-select {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 11px 14px;
   background: var(--bg-elevated);
   border: 1px solid var(--border);
