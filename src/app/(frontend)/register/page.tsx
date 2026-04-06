@@ -47,6 +47,14 @@ export default function RegisterPage() {
       })
 
       if (loginRes.ok) {
+        // Логируем событие регистрации (fire-and-forget)
+        fetch('/api/funnel-events', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ event: 'registration' }),
+        }).catch(() => {})
+
         router.push('/dashboard')
         router.refresh()
       } else {

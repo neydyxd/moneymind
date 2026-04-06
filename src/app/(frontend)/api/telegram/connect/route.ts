@@ -43,7 +43,7 @@ export async function DELETE() {
     await payload.update({
       collection: 'users',
       id: user.id,
-      data: { telegramId: '' },
+      data: { telegramId: null },
       overrideAccess: false,
       user,
     })

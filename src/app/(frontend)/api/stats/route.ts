@@ -89,6 +89,13 @@ export async function GET() {
       amount: byDay[(i + 1).toString()] || 0,
     }))
 
+    // Логируем просмотр статистики (fire-and-forget)
+    payload.create({
+      collection: 'funnel-events',
+      data: { user: user.id, event: 'stats_viewed' },
+      overrideAccess: true,
+    }).catch(() => {})
+
     return Response.json({
       current,
       last,

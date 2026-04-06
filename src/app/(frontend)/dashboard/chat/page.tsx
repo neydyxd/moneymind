@@ -1,7 +1,38 @@
 'use client'
 
 import { useState, useRef, useEffect } from 'react'
+import ReactMarkdown from 'react-markdown'
 import '../../styles.css'
+
+// Web Speech API типы
+interface SpeechRecognitionResult {
+  readonly [index: number]: { transcript: string; confidence: number }
+  readonly length: number
+}
+interface SpeechRecognitionResultList {
+  readonly [index: number]: SpeechRecognitionResult
+  readonly length: number
+}
+interface SpeechRecognitionEvent extends Event {
+  readonly results: SpeechRecognitionResultList
+}
+interface SpeechRecognitionInstance extends EventTarget {
+  lang: string
+  continuous: boolean
+  interimResults: boolean
+  maxAlternatives: number
+  onresult: ((event: SpeechRecognitionEvent) => void) | null
+  onerror: ((event: Event) => void) | null
+  onend: (() => void) | null
+  start(): void
+  stop(): void
+}
+declare global {
+  interface Window {
+    SpeechRecognition: { new (): SpeechRecognitionInstance }
+    webkitSpeechRecognition: { new (): SpeechRecognitionInstance }
+  }
+}
 
 interface Message {
   role: 'user' | 'assistant'
@@ -22,6 +53,14 @@ export default function ChatPage() {
   const [sessionId, setSessionId] = useState<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null)
+  const [recording, setRecording] = useState(false)
+  const [speechSupported, setSpeechSupported] = useState(false)
+
+  useEffect(() => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (SR) setSpeechSupported(true)
+  }, [])
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -59,6 +98,45 @@ export default function ChatPage() {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault()
       sendMessage()
+    }
+  }
+
+  const spokenTextRef = useRef('')
+
+  function startRecording() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (!SR) return
+
+    const recognition = new SR()
+    recognition.lang = 'ru-RU'
+    recognition.continuous = true
+    recognition.interimResults = false
+    recognition.maxAlternatives = 1
+    spokenTextRef.current = ''
+
+    recognition.onresult = (event) => {
+      const parts: string[] = []
+      for (let i = 0; i < event.results.length; i++) {
+        parts.push(event.results[i][0].transcript)
+      }
+      spokenTextRef.current = parts.join(' ')
+      setInput(spokenTextRef.current)
+    }
+
+    recognition.onerror = () => setRecording(false)
+    recognition.onend = () => setRecording(false)
+
+    recognitionRef.current = recognition
+    recognition.start()
+    setRecording(true)
+  }
+
+  function stopRecording() {
+    recognitionRef.current?.stop()
+    setRecording(false)
+    if (spokenTextRef.current.trim()) {
+      sendMessage(spokenTextRef.current.trim())
+      setInput('')
     }
   }
 
@@ -112,9 +190,7 @@ export default function ChatPage() {
                   {m.role === 'user' ? '👤' : '🤖'}
                 </div>
                 <div className="chat-bubble">
-                  {m.content.split('\n').map((line, j) => (
-                    <span key={j}>{line}{j < m.content.split('\n').length - 1 && <br />}</span>
-                  ))}
+                  <ReactMarkdown>{m.content}</ReactMarkdown>
                 </div>
               </div>
             ))}
@@ -145,6 +221,17 @@ export default function ChatPage() {
               rows={1}
               disabled={loading}
             />
+            {speechSupported && (
+              <button
+                className={`chat-send-btn ${recording ? 'recording' : ''}`}
+                onClick={recording ? stopRecording : startRecording}
+                disabled={loading}
+                title={recording ? 'Остановить запись' : 'Голосовой ввод'}
+                style={recording ? { background: 'var(--red)', color: '#fff' } : {}}
+              >
+                {recording ? '⏹' : '🎙'}
+              </button>
+            )}
             <button
               className="chat-send-btn"
               onClick={() => sendMessage()}

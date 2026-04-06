@@ -106,6 +106,7 @@ export default async function DashboardPage() {
       byCategory={Object.values(byCategory).sort((a, b) => b.amount - a.amount)}
       byDay={byDay}
       recentTransactions={recentTransactions}
+      monthlyBudget={(user as { monthlyBudget?: number }).monthlyBudget || 0}
     />
   )
 }

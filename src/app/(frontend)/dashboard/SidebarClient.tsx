@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
 
 interface SidebarClientProps {
   userEmail: string
@@ -19,6 +20,11 @@ const navItems = [
 export function SidebarClient({ userEmail, userName, userInitials }: SidebarClientProps) {
   const pathname = usePathname()
   const router = useRouter()
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    setMobileOpen(false)
+  }, [pathname])
 
   async function handleLogout() {
     await fetch('/api/users/logout', { method: 'POST', credentials: 'include' })
@@ -32,45 +38,57 @@ export function SidebarClient({ userEmail, userName, userInitials }: SidebarClie
   }
 
   return (
-    <aside className="sidebar">
-      <div className="sidebar-header">
-        <Link href="/" className="sidebar-logo">
-          <div className="sidebar-logo-icon">💰</div>
-          MoneyMind
-        </Link>
-      </div>
+    <>
+      <button className="mobile-menu-btn" onClick={() => setMobileOpen(true)} aria-label="Открыть меню">
+        <span />
+        <span />
+        <span />
+      </button>
 
-      <nav className="sidebar-nav">
-        <div className="sidebar-section-label">Навигация</div>
-        {navItems.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            className={`sidebar-link ${isActive(item.href, item.exact) ? 'active' : ''}`}
-          >
-            <span style={{ fontSize: 16 }}>{item.icon}</span>
-            {item.label}
+      {mobileOpen && <div className="sidebar-overlay" onClick={() => setMobileOpen(false)} />}
+
+      <aside className={`sidebar ${mobileOpen ? 'sidebar--open' : ''}`}>
+        <button className="sidebar-close-btn" onClick={() => setMobileOpen(false)} aria-label="Закрыть меню">✕</button>
+
+        <div className="sidebar-header">
+          <Link href="/" className="sidebar-logo">
+            <div className="sidebar-logo-icon">💰</div>
+            MoneyMind
           </Link>
-        ))}
-      </nav>
-
-      <div className="sidebar-footer">
-        <div className="sidebar-user">
-          <div className="sidebar-avatar">{userInitials}</div>
-          <div className="sidebar-user-info">
-            <div className="sidebar-user-name">{userName || 'Пользователь'}</div>
-            <div className="sidebar-user-email">{userEmail}</div>
-          </div>
         </div>
-        <button
-          onClick={handleLogout}
-          className="sidebar-link"
-          style={{ width: '100%', marginTop: 4 }}
-        >
-          <span style={{ fontSize: 16 }}>🚪</span>
-          Выйти
-        </button>
-      </div>
-    </aside>
+
+        <nav className="sidebar-nav">
+          <div className="sidebar-section-label">Навигация</div>
+          {navItems.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`sidebar-link ${isActive(item.href, item.exact) ? 'active' : ''}`}
+            >
+              <span style={{ fontSize: 16 }}>{item.icon}</span>
+              {item.label}
+            </Link>
+          ))}
+        </nav>
+
+        <div className="sidebar-footer">
+          <div className="sidebar-user">
+            <div className="sidebar-avatar">{userInitials}</div>
+            <div className="sidebar-user-info">
+              <div className="sidebar-user-name">{userName || 'Пользователь'}</div>
+              <div className="sidebar-user-email">{userEmail}</div>
+            </div>
+          </div>
+          <button
+            onClick={handleLogout}
+            className="sidebar-link"
+            style={{ width: '100%', marginTop: 4 }}
+          >
+            <span style={{ fontSize: 16 }}>🚪</span>
+            Выйти
+          </button>
+        </div>
+      </aside>
+    </>
   )
 }

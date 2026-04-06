@@ -41,6 +41,7 @@ interface DashboardClientProps {
   byCategory: CategoryStat[]
   byDay: DayData[]
   recentTransactions: Transaction[]
+  monthlyBudget: number
 }
 
 function formatMoney(n: number) {
@@ -53,7 +54,7 @@ function pctChange(current: number, prev: number) {
   return { pct: Math.abs(pct).toFixed(0), up: pct > 0 }
 }
 
-export function DashboardClient({ userName, stats, byCategory, byDay, recentTransactions }: DashboardClientProps) {
+export function DashboardClient({ userName, stats, byCategory, byDay, recentTransactions, monthlyBudget }: DashboardClientProps) {
   const expenseChange = pctChange(stats.expense, stats.lastExpense)
   const incomeChange = pctChange(stats.income, stats.lastIncome)
 
@@ -110,14 +111,40 @@ export function DashboardClient({ userName, stats, byCategory, byDay, recentTran
             </div>
           </div>
 
-          <div className="card" style={{ background: 'linear-gradient(135deg, rgba(124,58,237,0.15), rgba(59,130,246,0.1))', borderColor: 'rgba(124,58,237,0.3)' }}>
-            <div className="card-title">AI-ассистент</div>
-            <div style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 10 }}>
-              Задайте вопрос о бюджете
+          <div className="stat-card">
+            <div className="stat-header">
+              <span className="stat-icon">📋</span>
+              <span className="stat-label">Бюджет</span>
             </div>
-            <a href="/dashboard/chat" className="btn btn-primary btn-sm">
-              Открыть чат →
-            </a>
+            {monthlyBudget > 0 ? (
+              <>
+                <div className="stat-value">
+                  {formatMoney(monthlyBudget - stats.expense)}
+                  <span className="stat-sub"> осталось</span>
+                </div>
+                <div className="budget-bar">
+                  <div
+                    className="budget-bar-fill"
+                    style={{
+                      width: `${Math.min(100, (stats.expense / monthlyBudget) * 100)}%`,
+                      background:
+                        stats.expense / monthlyBudget < 0.8
+                          ? 'var(--green)'
+                          : stats.expense / monthlyBudget < 1
+                          ? 'var(--yellow, #eab308)'
+                          : 'var(--red)',
+                    }}
+                  />
+                </div>
+                <div className="stat-change" style={{ color: 'var(--text-muted)' }}>
+                  {Math.round((stats.expense / monthlyBudget) * 100)}% использовано
+                </div>
+              </>
+            ) : (
+              <div className="stat-value" style={{ fontSize: 14, color: 'var(--text-muted)' }}>
+                Установите в настройках
+              </div>
+            )}
           </div>
         </div>
 

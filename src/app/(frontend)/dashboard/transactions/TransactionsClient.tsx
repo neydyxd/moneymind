@@ -2,6 +2,36 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 
+// Web Speech API типы (не во всех браузерах)
+interface SpeechRecognitionResult {
+  readonly [index: number]: { transcript: string; confidence: number }
+  readonly length: number
+}
+interface SpeechRecognitionResultList {
+  readonly [index: number]: SpeechRecognitionResult
+  readonly length: number
+}
+interface SpeechRecognitionEvent extends Event {
+  readonly results: SpeechRecognitionResultList
+}
+interface SpeechRecognitionInstance extends EventTarget {
+  lang: string
+  continuous: boolean
+  interimResults: boolean
+  maxAlternatives: number
+  onresult: ((event: SpeechRecognitionEvent) => void) | null
+  onerror: ((event: Event) => void) | null
+  onend: (() => void) | null
+  start(): void
+  stop(): void
+}
+declare global {
+  interface Window {
+    SpeechRecognition: { new (): SpeechRecognitionInstance }
+    webkitSpeechRecognition: { new (): SpeechRecognitionInstance }
+  }
+}
+
 interface Category {
   id: string
   name: string
@@ -43,9 +73,13 @@ export function TransactionsClient({ initialCategories }: TransactionsClientProp
   const [date, setDate] = useState(new Date().toISOString().slice(0, 10))
   const [aiParsing, setAiParsing] = useState(false)
   const [recording, setRecording] = useState(false)
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null)
-  const chunksRef = useRef<Blob[]>([])
+  const [speechSupported, setSpeechSupported] = useState(true)
+  const recognitionRef = useRef<SpeechRecognitionInstance | null>(null)
 
+  useEffect(() => {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (!SR) setSpeechSupported(false)
+  }, [])
   function showToast(msg: string, type: 'success' | 'error' = 'success') {
     setToast({ msg, type })
     setTimeout(() => setToast(null), 3000)
@@ -109,50 +143,43 @@ export function TransactionsClient({ initialCategories }: TransactionsClientProp
     }
   }
 
-  async function startRecording() {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true })
-      const mr = new MediaRecorder(stream)
-      mediaRecorderRef.current = mr
-      chunksRef.current = []
-
-      mr.ondataavailable = (e) => chunksRef.current.push(e.data)
-      mr.onstop = async () => {
-        stream.getTracks().forEach((t) => t.stop())
-        const blob = new Blob(chunksRef.current, { type: 'audio/webm' })
-        const formData = new FormData()
-        formData.append('file', blob, 'voice.webm')
-        formData.append('model', 'whisper-1')
-        formData.append('language', 'ru')
-
-        try {
-          const res = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-            method: 'POST',
-            headers: { Authorization: `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY || ''}` },
-            body: formData,
-          })
-          if (res.ok) {
-            const data = await res.json()
-            setDescription(data.text || '')
-            showToast('Голос распознан!')
-          } else {
-            showToast('Ошибка распознавания', 'error')
-          }
-        } catch {
-          showToast('Нет API ключа для голоса', 'error')
-        }
-      }
-
-      mr.start()
-      setRecording(true)
-    } catch {
-      showToast('Нет доступа к микрофону', 'error')
+  function startRecording() {
+    const SR = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (!SR) {
+      showToast('Браузер не поддерживает голосовой ввод', 'error')
+      return
     }
+
+    const recognition = new SR()
+    recognition.lang = 'ru-RU'
+    recognition.continuous = true
+    recognition.interimResults = false
+    recognition.maxAlternatives = 1
+
+    recognition.onresult = (event) => {
+      const parts: string[] = []
+      for (let i = 0; i < event.results.length; i++) {
+        parts.push(event.results[i][0].transcript)
+      }
+      setDescription(parts.join(' '))
+    }
+
+    recognition.onerror = () => {
+      showToast('Ошибка распознавания', 'error')
+      setRecording(false)
+    }
+
+    recognition.onend = () => setRecording(false)
+
+    recognitionRef.current = recognition
+    recognition.start()
+    setRecording(true)
   }
 
   function stopRecording() {
-    mediaRecorderRef.current?.stop()
+    recognitionRef.current?.stop()
     setRecording(false)
+    showToast('Голос распознан!')
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -192,6 +219,7 @@ export function TransactionsClient({ initialCategories }: TransactionsClientProp
   }
 
   async function handleDelete(id: string) {
+    if (!confirm('Удалить транзакцию?')) return
     try {
       await fetch('/api/transactions', {
         method: 'DELETE',
@@ -248,14 +276,16 @@ export function TransactionsClient({ initialCategories }: TransactionsClientProp
                   style={{ paddingRight: 80 }}
                 />
                 <div style={{ position: 'absolute', right: 8, top: '50%', transform: 'translateY(-50%)', display: 'flex', gap: 4 }}>
-                  <button
-                    type="button"
-                    className={`mic-btn ${recording ? 'recording' : ''}`}
-                    title="Голосовой ввод"
-                    onClick={recording ? stopRecording : startRecording}
-                  >
-                    {recording ? '⏹' : '🎙'}
-                  </button>
+                  {speechSupported && (
+                    <button
+                      type="button"
+                      className={`mic-btn ${recording ? 'recording' : ''}`}
+                      title="Голосовой ввод"
+                      onClick={recording ? stopRecording : startRecording}
+                    >
+                      {recording ? '⏹' : '🎙'}
+                    </button>
+                  )}
                   <button
                     type="button"
                     className="mic-btn"

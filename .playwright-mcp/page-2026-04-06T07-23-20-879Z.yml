@@ -1,0 +1,23 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e3]:
+    - link "💰 MoneyMind" [ref=e4] [cursor=pointer]:
+      - /url: /
+      - generic [ref=e5]: 💰
+      - text: MoneyMind
+    - heading "Добро пожаловать" [level=1] [ref=e6]
+    - paragraph [ref=e7]: Войдите в свой аккаунт
+    - generic [ref=e8]:
+      - generic [ref=e9]:
+        - generic [ref=e10]: Email
+        - textbox "you@example.com" [ref=e11]
+      - generic [ref=e12]:
+        - generic [ref=e13]: Пароль
+        - textbox "••••••••" [ref=e14]
+      - button "Войти" [ref=e15] [cursor=pointer]
+    - generic [ref=e16]:
+      - text: Нет аккаунта?
+      - link "Зарегистрироваться" [ref=e17] [cursor=pointer]:
+        - /url: /register
+  - button "Open Next.js Dev Tools" [ref=e23] [cursor=pointer]:
+    - img [ref=e24]
+  - alert [ref=e27]

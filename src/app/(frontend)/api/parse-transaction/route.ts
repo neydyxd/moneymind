@@ -1,4 +1,5 @@
 import { getPayload } from 'payload'
+import { headers as getHeaders } from 'next/headers'
 import { NextRequest } from 'next/server'
 import config from '@payload-config'
 import { chat, checkAiConfig } from '@/lib/ai'
@@ -6,6 +7,13 @@ import { chat, checkAiConfig } from '@/lib/ai'
 export async function POST(req: NextRequest) {
   try {
     const payload = await getPayload({ config })
+
+    const headersList = await getHeaders()
+    const { user } = await payload.auth({ headers: headersList })
+    if (!user) {
+      return Response.json({ error: 'Не авторизован' }, { status: 401 })
+    }
+
     const { text } = await req.json()
 
     if (!text) {

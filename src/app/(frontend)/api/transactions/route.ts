@@ -54,11 +54,27 @@ export async function POST(req: NextRequest) {
     }
 
     const body = await req.json()
+    const { description, amount, type, category, date, source } = body
+
+    if (!description || typeof description !== 'string') {
+      return Response.json({ error: 'Описание обязательно' }, { status: 400 })
+    }
+    if (!amount || typeof amount !== 'number' || amount <= 0) {
+      return Response.json({ error: 'Сумма должна быть больше 0' }, { status: 400 })
+    }
+    if (!['expense', 'income'].includes(type)) {
+      return Response.json({ error: 'Тип должен быть expense или income' }, { status: 400 })
+    }
 
     const transaction = await payload.create({
       collection: 'transactions',
       data: {
-        ...body,
+        description,
+        amount,
+        type,
+        ...(category ? { category } : {}),
+        date: date || new Date().toISOString(),
+        source: source || 'manual',
         user: user.id,
       },
       overrideAccess: false,

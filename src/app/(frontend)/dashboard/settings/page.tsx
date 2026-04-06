@@ -68,6 +68,33 @@ export default function SettingsPage() {
     load()
   }, [])
 
+  useEffect(() => {
+    if (tgConnect.status !== 'ready') return
+
+    const interval = setInterval(async () => {
+      try {
+        const res = await fetch('/api/users/me', { credentials: 'include' })
+        if (!res.ok) return
+        const data = await res.json()
+        if (data.user?.telegramId) {
+          setProfile((p) => ({ ...p, telegramId: data.user.telegramId }))
+          setTgConnect({ status: 'idle' })
+          showToast('Telegram подключён!')
+        }
+      } catch { /* ignore */ }
+    }, 5000)
+
+    const timeout = setTimeout(() => {
+      clearInterval(interval)
+      setTgConnect({ status: 'idle' })
+    }, 10 * 60 * 1000)
+
+    return () => {
+      clearInterval(interval)
+      clearTimeout(timeout)
+    }
+  }, [tgConnect.status])
+
   async function saveProfile(e: React.FormEvent) {
     e.preventDefault()
     if (!userId) return
@@ -157,6 +184,7 @@ export default function SettingsPage() {
   }
 
   async function deleteCategory(id: string) {
+    if (!confirm('Удалить категорию?')) return
     try {
       await fetch(`/api/categories/${id}`, { method: 'DELETE', credentials: 'include' })
       setCategories((prev) => prev.filter((c) => c.id !== id))
@@ -422,26 +450,7 @@ export default function SettingsPage() {
           </form>
         </div>
 
-        <div className="settings-section">
-          <div className="settings-section-title">OpenAI API</div>
-          <div className="settings-row">
-            <div>
-              <div className="settings-row-label">API ключ</div>
-              <div className="settings-row-desc">
-                Установите OPENAI_API_KEY в файле .env для работы AI-функций
-              </div>
-            </div>
-            <span
-              className="badge"
-              style={{
-                background: process.env.NEXT_PUBLIC_HAS_OPENAI ? 'rgba(16,185,129,0.15)' : 'rgba(239,68,68,0.15)',
-                color: process.env.NEXT_PUBLIC_HAS_OPENAI ? 'var(--green)' : 'var(--red)',
-              }}
-            >
-              {process.env.NEXT_PUBLIC_HAS_OPENAI ? 'Настроен' : 'Не настроен'}
-            </span>
-          </div>
-        </div>
+
       </div>
 
       {toast && <div className={`toast ${toast.type}`}>{toast.msg}</div>}
